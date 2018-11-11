@@ -12,7 +12,7 @@ namespace Examples
             driver.CalculateShortestPath();
         }
 
-        private Graph<Vertex> BuildGraph()
+        private Graph<Vertex> BuildLargeGraph()
         {
             VertexList<Vertex> vertices = new VertexList<Vertex>() {
                 new Vertex("S"), new Vertex("A"), new Vertex("B"), new Vertex("D"),
@@ -37,12 +37,27 @@ namespace Examples
             return graph;
         }
 
+        private Graph<Vertex> BuildSmallGraph()
+        {
+            VertexList<Vertex> vertices = new VertexList<Vertex>() { new Vertex("A"), new Vertex("B"), new Vertex("C"), new Vertex("D"), new Vertex("E") };
+            Graph<Vertex> graph = new Graph<Vertex>(vertices);
+            graph.AddEdges(vertices.Get("A"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("B"), 6), new Edge<Vertex>(vertices.Get("D"), 1) });
+            graph.AddEdges(vertices.Get("B"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("A"), 6), new Edge<Vertex>(vertices.Get("D"), 2), new Edge<Vertex>(vertices.Get("E"), 2), new Edge<Vertex>(vertices.Get("C"), 5) });
+            graph.AddEdges(vertices.Get("C"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("B"), 5), new Edge<Vertex>(vertices.Get("E"), 5) });
+            graph.AddEdges(vertices.Get("D"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("A"), 1), new Edge<Vertex>(vertices.Get("B"), 2), new Edge<Vertex>(vertices.Get("E"), 1) });
+            graph.AddEdges(vertices.Get("E"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("D"), 1), new Edge<Vertex>(vertices.Get("B"), 2), new Edge<Vertex>(vertices.Get("C"), 5) });
+            return graph;
+        }
+
         public void CalculateShortestPath()
         {
-            Graph<Vertex> graph = BuildGraph();
-            VertexList<Vertex> vertices = graph.GetVertices();
+            Graph<Vertex> graph = BuildLargeGraph();
             Dijkstra algorithm = new Dijkstra();
-            algorithm.GetShortestPath(vertices.Get("S"), vertices.Get("E"), graph);
+            graph = algorithm.CalculateShortestPaths(graph);
+
+            VertexList<Vertex> allvertices = graph.GetVertices();
+            VertexList<Vertex> pathVertices = algorithm.GetShortestPath(allvertices.Get("S"), allvertices.Get("E"), graph);
+            System.Console.WriteLine(pathVertices);
         }
     }
 }

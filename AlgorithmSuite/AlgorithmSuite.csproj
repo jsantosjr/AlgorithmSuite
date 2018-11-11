@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Algorithms\Dijkstra.cs" />
     <Compile Include="Components\Edge.cs" />
+    <Compile Include="Components\EdgeList.cs" />
     <Compile Include="Components\Vertex.cs" />
     <Compile Include="Components\VertexList.cs" />
     <Compile Include="DataStructures\Graph.cs" />

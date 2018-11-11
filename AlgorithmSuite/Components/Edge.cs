@@ -10,12 +10,12 @@ namespace AlgorithmSuite.Components
     {
         #region Properties
         /// <summary>
-        /// Returns a value that identifies the destination vertex of this Edge.
+        /// Gets a value that identifies the destination vertex of this Edge.
         /// </summary>
         public VertexType Destination { get; private set; }
 
         /// <summary>
-        /// Returns and sets the weight of this Edge.
+        /// Gets the weight of this Edge.
         /// </summary>
         public int Weight { get; private set; }
         #endregion

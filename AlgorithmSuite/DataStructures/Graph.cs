@@ -6,7 +6,7 @@ namespace AlgorithmSuite.DataStructures
 {
     public class Graph<VertexType>
     {
-        Dictionary<VertexType, List<Edge<VertexType>>> _adjacentEdges;
+        Dictionary<VertexType, EdgeList<VertexType>> _adjacentEdges;
         #region Properties
         /// <summary>
         /// Returns the number of vertices in this Graph.
@@ -21,11 +21,11 @@ namespace AlgorithmSuite.DataStructures
         public Graph(VertexList<VertexType> vertices)
         {
             NumVertices = vertices.Count;
-            _adjacentEdges = new Dictionary<VertexType, List<Edge<VertexType>>>();
+            _adjacentEdges = new Dictionary<VertexType, EdgeList<VertexType>>();
             for (int i = 0; i < vertices.Count; i++)
             {
                 if (vertices[i] != null)
-                    _adjacentEdges[vertices[i]] = new List<Edge<VertexType>>();
+                    _adjacentEdges[vertices[i]] = new EdgeList<VertexType>();
             }
         }
 
@@ -97,12 +97,12 @@ namespace AlgorithmSuite.DataStructures
         /// Returns the neighbors of the specified source vertex.
         /// </summary>
         /// <param name="source">A value that identifies the source vertex.</param>
-        public List<Edge<VertexType>> GetNeighbors(VertexType source)
+        public EdgeList<VertexType> GetNeighbors(VertexType source)
         {
-            List<Edge<VertexType>> neighbor = null;
+            EdgeList<VertexType> neighbors = null;
             if (VertexExists(source))
-                neighbor = _adjacentEdges[source];
-            return neighbor;
+                neighbors = _adjacentEdges[source];
+            return neighbors;
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace AlgorithmSuite.DataStructures
         public string GetVertexAsString(VertexType vertex)
         {
             string value = string.Empty;
-            List<Edge<VertexType>> neighbors = GetNeighbors(vertex);
+            EdgeList<VertexType> neighbors = GetNeighbors(vertex);
             if (neighbors != null && VertexExists(vertex))
             {
                 string neighborsAsString = string.Empty;

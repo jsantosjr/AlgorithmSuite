@@ -12,9 +12,9 @@ namespace AlgorithmSuite.Components
         public string Id { get; private set; }
 
         /// <summary>
-        /// Gets and sets the ID of the vertex that was previously visited.
+        /// Gets and sets the vertex that was previously visited.
         /// </summary>
-        public string PreviousId { get; set; }
+        public Vertex Previous { get; set; }
 
         /// <summary>
         /// Gets and sets the shortest distance to the vertex.
@@ -29,7 +29,7 @@ namespace AlgorithmSuite.Components
         public Vertex(string id)
         {
             Id = id;
-            PreviousId = null;
+            Previous = null;
             Distance = Int32.MaxValue;
         }
 
