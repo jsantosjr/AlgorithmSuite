@@ -52,11 +52,10 @@ namespace Examples
         public void CalculateShortestPath()
         {
             Graph<Vertex> graph = BuildLargeGraph();
-            Dijkstra algorithm = new Dijkstra();
-            graph = algorithm.CalculateShortestPaths(graph);
+            Dijkstra algorithm = new Dijkstra(graph);
 
             VertexList<Vertex> allvertices = graph.GetVertices();
-            VertexList<Vertex> pathVertices = algorithm.GetShortestPath(allvertices.Get("S"), allvertices.Get("E"), graph);
+            VertexList<Vertex> pathVertices = algorithm.GetShortestPath(allvertices.Get("S"), allvertices.Get("E"));
             System.Console.WriteLine(pathVertices);
         }
     }

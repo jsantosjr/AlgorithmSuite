@@ -5,11 +5,17 @@ namespace AlgorithmSuite.Algorithms
 {
     public class Dijkstra
     {
+        private bool _calculated;
+        private Graph<Vertex> _graph;
+
         /// <summary>
         /// Creates a Dijkstra instance that is used to calculate the shortest path between vertices.
         /// </summary>
-        public Dijkstra()
+        /// <param name="graph">The graph on which shortest paths will be calculated.</param>
+        public Dijkstra(Graph<Vertex> graph)
         {
+            _calculated = false;
+            _graph = graph;
         }
 
         /// <summary>
@@ -17,9 +23,9 @@ namespace AlgorithmSuite.Algorithms
         /// </summary>
         /// <param name="graph">The graph on which shortest paths will be calculated.</param>
         /// <returns>A graph that's updated with the calculated shortest paths.</returns>
-        public Graph<Vertex> CalculateShortestPaths(Graph<Vertex> graph)
+        private void CalculateShortestPaths()
         {
-            VertexList<Vertex> unvisited = (graph != null) ? graph.GetVertices() : null;
+            VertexList<Vertex> unvisited = (_graph != null) ? _graph.GetVertices() : null;
             if (unvisited != null && unvisited.Count > 0)
             {
                 VertexList<Vertex> visited = new VertexList<Vertex>();
@@ -29,7 +35,7 @@ namespace AlgorithmSuite.Algorithms
                 {
                     visited.Add(currentVertex);
                     unvisited.Remove(currentVertex);
-                    EdgeList<Vertex> neighbors = graph.GetNeighbors(currentVertex);
+                    EdgeList<Vertex> neighbors = _graph.GetNeighbors(currentVertex);
                     foreach (Edge<Vertex> neighbor in neighbors)
                     {
                         Vertex neighborVertex = neighbor.Destination;
@@ -50,7 +56,7 @@ namespace AlgorithmSuite.Algorithms
                     currentVertex = GetShortestVertex(currentVertex, unvisited);
                 }
             }
-            return graph;
+            _calculated = true;
         }
 
         /// <summary>
@@ -58,17 +64,19 @@ namespace AlgorithmSuite.Algorithms
         /// </summary>
         /// <param name="startVertex">The start Vertex.</param>
         /// <param name="endVertex">The end vertex.</param>
-        /// <param name="graph">The graph on which shortest paths will be calculated.</param>
         /// <returns>A graph that's updated with the calculated shortest paths.</returns>
-        public VertexList<Vertex> GetShortestPath(Vertex startVertex, Vertex endVertex, Graph<Vertex> graph)
+        public VertexList<Vertex> GetShortestPath(Vertex startVertex, Vertex endVertex)
         {
+            if (!_calculated)
+                CalculateShortestPaths();
+
             VertexList<Vertex> path = new VertexList<Vertex>();
-            if (graph != null && graph.VertexExists(startVertex) && graph.VertexExists(endVertex))
+            if (_graph != null && _graph.VertexExists(startVertex) && _graph.VertexExists(endVertex))
             {
                 Vertex currentVertex = endVertex;
                 while (currentVertex != null)
                 {
-                    if (graph.VertexExists(currentVertex))
+                    if (_graph.VertexExists(currentVertex))
                     {
                         path.Add(currentVertex);
                         currentVertex = currentVertex.Previous;
