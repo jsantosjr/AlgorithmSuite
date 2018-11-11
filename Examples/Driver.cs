@@ -1,4 +1,6 @@
-﻿using AlgorithmSuite.DataStructures;
+﻿using AlgorithmSuite.Algorithms;
+using AlgorithmSuite.Components;
+using AlgorithmSuite.DataStructures;
 
 namespace Examples
 {
@@ -6,21 +8,41 @@ namespace Examples
     {
         static void Main(string[] args)
         {
-            Graph<string> graph = new Graph<string>(new string[] { "S", "A", "B", "D", "F", "H", "G", "C", "L", "I", "J", "K", "E" });
-            graph.AddEdges("S", new Edge<string>[] { new Edge<string>("A", 7), new Edge<string>("B", 2), new Edge<string>("C", 3) });
-            graph.AddEdges("A", new Edge<string>[] { new Edge<string>("S", 7), new Edge<string>("B", 3), new Edge<string>("D", 4) });
-            graph.AddEdges("B", new Edge<string>[] { new Edge<string>("S", 2), new Edge<string>("A", 3), new Edge<string>("D", 4), new Edge<string>("H", 1) });
-            graph.AddEdges("D", new Edge<string>[] { new Edge<string>("A", 4), new Edge<string>("B", 4), new Edge<string>("F", 5) });
-            graph.AddEdges("F", new Edge<string>[] { new Edge<string>("D", 5), new Edge<string>("H", 3) });
-            graph.AddEdges("H", new Edge<string>[] { new Edge<string>("B", 1), new Edge<string>("F", 3), new Edge<string>("G", 2) });
-            graph.AddEdges("G", new Edge<string>[] { new Edge<string>("H", 2), new Edge<string>("E", 2) });
-            graph.AddEdges("C", new Edge<string>[] { new Edge<string>("S", 3), new Edge<string>("L", 2) });
-            graph.AddEdges("L", new Edge<string>[] { new Edge<string>("C", 2), new Edge<string>("I", 4), new Edge<string>("J", 4) });
-            graph.AddEdges("I", new Edge<string>[] { new Edge<string>("L", 4), new Edge<string>("J", 6), new Edge<string>("K", 4) });
-            graph.AddEdges("J", new Edge<string>[] { new Edge<string>("L", 4), new Edge<string>("I", 6), new Edge<string>("K", 4) });
-            graph.AddEdges("K", new Edge<string>[] { new Edge<string>("J", 4), new Edge<string>("I", 4), new Edge<string>("E", 5) });
-            graph.AddEdges("E", new Edge<string>[] { new Edge<string>("G", 2), new Edge<string>("K", 5) });
-            System.Console.WriteLine(graph.ToString());
+            Driver driver = new Driver();
+            driver.CalculateShortestPath();
+        }
+
+        private Graph<Vertex> BuildGraph()
+        {
+            VertexList<Vertex> vertices = new VertexList<Vertex>() {
+                new Vertex("S"), new Vertex("A"), new Vertex("B"), new Vertex("D"),
+                new Vertex("F"), new Vertex("H"), new Vertex("G"), new Vertex("C"),
+                new Vertex("L"), new Vertex("I"), new Vertex("J"), new Vertex("K"),
+                new Vertex("E") };
+
+            Graph<Vertex> graph = new Graph<Vertex>(vertices);
+            graph.AddEdges(vertices.Get("S"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("A"), 7), new Edge<Vertex>(vertices.Get("B"), 2), new Edge<Vertex>(vertices.Get("C"), 3) });
+            graph.AddEdges(vertices.Get("A"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("S"), 7), new Edge<Vertex>(vertices.Get("B"), 3), new Edge<Vertex>(vertices.Get("D"), 4) });
+            graph.AddEdges(vertices.Get("B"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("S"), 2), new Edge<Vertex>(vertices.Get("A"), 3), new Edge<Vertex>(vertices.Get("D"), 4), new Edge<Vertex>(vertices.Get("H"), 1) });
+            graph.AddEdges(vertices.Get("D"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("A"), 4), new Edge<Vertex>(vertices.Get("B"), 4), new Edge<Vertex>(vertices.Get("F"), 5) });
+            graph.AddEdges(vertices.Get("F"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("D"), 5), new Edge<Vertex>(vertices.Get("H"), 3) });
+            graph.AddEdges(vertices.Get("H"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("B"), 1), new Edge<Vertex>(vertices.Get("F"), 3), new Edge<Vertex>(vertices.Get("G"), 2) });
+            graph.AddEdges(vertices.Get("G"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("H"), 2), new Edge<Vertex>(vertices.Get("E"), 2) });
+            graph.AddEdges(vertices.Get("C"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("S"), 3), new Edge<Vertex>(vertices.Get("L"), 2) });
+            graph.AddEdges(vertices.Get("L"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("C"), 2), new Edge<Vertex>(vertices.Get("I"), 4), new Edge<Vertex>(vertices.Get("J"), 4) });
+            graph.AddEdges(vertices.Get("I"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("L"), 4), new Edge<Vertex>(vertices.Get("J"), 6), new Edge<Vertex>(vertices.Get("K"), 4) });
+            graph.AddEdges(vertices.Get("J"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("L"), 4), new Edge<Vertex>(vertices.Get("I"), 6), new Edge<Vertex>(vertices.Get("K"), 4) });
+            graph.AddEdges(vertices.Get("K"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("J"), 4), new Edge<Vertex>(vertices.Get("I"), 4), new Edge<Vertex>(vertices.Get("E"), 5) });
+            graph.AddEdges(vertices.Get("E"), new Edge<Vertex>[] { new Edge<Vertex>(vertices.Get("G"), 2), new Edge<Vertex>(vertices.Get("K"), 5) });
+            return graph;
+        }
+
+        public void CalculateShortestPath()
+        {
+            Graph<Vertex> graph = BuildGraph();
+            VertexList<Vertex> vertices = graph.GetVertices();
+            Dijkstra algorithm = new Dijkstra();
+            algorithm.GetShortestPath(vertices.Get("S"), vertices.Get("E"), graph);
         }
     }
 }

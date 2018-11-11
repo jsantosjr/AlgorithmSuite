@@ -1,41 +1,12 @@
-﻿using System;
+﻿using AlgorithmSuite.Components;
+using System;
 using System.Collections.Generic;
 
 namespace AlgorithmSuite.DataStructures
 {
-    /// <summary>
-    /// The Edge class is used to identify the connection between two vertices on a graph. It is characterized as having
-    /// a destination vertex and a weight value.
-    /// </summary>
-    public class Edge<VertexType>
-    {
-        #region Properties
-        /// <summary>
-        /// Returns a value that identifies the destination vertex of this Edge.
-        /// </summary>
-        public VertexType Destination { get; private set; }
-
-        /// <summary>
-        /// Returns and sets the weight of this Edge.
-        /// </summary>
-        public int Weight { get; private set; }
-        #endregion
-
-        /// <summary>
-        /// Creates an Edge instance.
-        /// </summary>
-        /// <param name="destination">A value that identifies the destination vertex of the Edge.</param>
-        /// <param name="weight">The weight value of the Edge.</param>
-        public Edge(VertexType destination, int weight = Int32.MaxValue)
-        {
-            Destination = destination;
-            Weight = weight;
-        }
-    }
-
     public class Graph<VertexType>
     {
-        Dictionary<VertexType, List< Edge<VertexType>>> _adjacentEdges;
+        Dictionary<VertexType, List<Edge<VertexType>>> _adjacentEdges;
         #region Properties
         /// <summary>
         /// Returns the number of vertices in this Graph.
@@ -47,13 +18,14 @@ namespace AlgorithmSuite.DataStructures
         /// Creates a Graph with a specific number of vertices.
         /// </summary>
         /// <param name="vertices">The vertices in the Graph.</param>
-        public Graph(VertexType[] vertices)
+        public Graph(VertexList<VertexType> vertices)
         {
-            NumVertices = vertices.Length;
+            NumVertices = vertices.Count;
             _adjacentEdges = new Dictionary<VertexType, List<Edge<VertexType>>>();
-            for (int i = 0; i < vertices.Length; i++)
+            for (int i = 0; i < vertices.Count; i++)
             {
-                _adjacentEdges[vertices[i]] = new List<Edge<VertexType>>();
+                if (vertices[i] != null)
+                    _adjacentEdges[vertices[i]] = new List<Edge<VertexType>>();
             }
         }
 
@@ -66,13 +38,16 @@ namespace AlgorithmSuite.DataStructures
         public bool AddEdge(VertexType source, Edge<VertexType> edge)
         {
             bool edgeAdded = false;
-            if (VertexExists(source) && VertexExists(edge.Destination))
+            if (edge != null)
             {
-                Edge<VertexType> existingEdge = GetEdge(source, edge.Destination); 
-                if (existingEdge != null)
-                    _adjacentEdges[source].Remove(existingEdge);
-                _adjacentEdges[source].Add(edge);
-                edgeAdded = true;
+                if (VertexExists(source) && VertexExists(edge.Destination))
+                {
+                    Edge<VertexType> existingEdge = GetEdge(source, edge.Destination);
+                    if (existingEdge != null)
+                        _adjacentEdges[source].Remove(existingEdge);
+                    _adjacentEdges[source].Add(edge);
+                    edgeAdded = true;
+                }
             }
             return edgeAdded;
         }
@@ -103,45 +78,6 @@ namespace AlgorithmSuite.DataStructures
         }
 
         /// <summary>
-        /// Returns a string representation of the specified vertex.
-        /// </summary>
-        /// <param name="vertex">The vertex whose string representation will be returned.</param>
-        /// <returns>A string representation of the specified vertex.</returns>
-        public string GetVertexAsString(VertexType vertex)
-        {
-            string value = string.Empty;
-            List<Edge<VertexType>> children = GetChildren(vertex);
-            if (children != null && VertexExists(vertex))
-            {
-                string childrenAsString = string.Empty;
-                for (int i = 0; i < children.Count; i++)
-                {
-                    Edge<VertexType> child = children[i];
-                    if (i > 0)
-                        childrenAsString += ", ";
-                    childrenAsString += string.Format("{0}:{1}", child.Destination.ToString(), child.Weight);
-                }
-                if (string.IsNullOrEmpty(childrenAsString))
-                    value = string.Format("[{0}]", vertex.ToString());
-                else
-                    value = string.Format("[{0}] - {{{1}}}", vertex.ToString(), childrenAsString);
-            }
-            return value;
-        }
-
-        /// <summary>
-        /// Returns the children of the specified source vertex.
-        /// </summary>
-        /// <param name="source">A value that identifies the source vertex.</param>
-        public List<Edge<VertexType>> GetChildren(VertexType source)
-        {
-            List<Edge<VertexType>> children = null;
-            if (VertexExists(source))
-                children = _adjacentEdges[source];
-            return children;
-        }
-
-        /// <summary>
         /// Returns an edge that exists between the specified vertices or null if it doesn't exist.
         /// </summary>
         /// <param name="source">A value that identifies the source vertex of the edge.</param>
@@ -155,6 +91,59 @@ namespace AlgorithmSuite.DataStructures
                 edge = _adjacentEdges[source].Find(e => e.Destination.Equals(destination));
             }
             return edge;
+        }
+
+        /// <summary>
+        /// Returns the neighbors of the specified source vertex.
+        /// </summary>
+        /// <param name="source">A value that identifies the source vertex.</param>
+        public List<Edge<VertexType>> GetNeighbors(VertexType source)
+        {
+            List<Edge<VertexType>> neighbor = null;
+            if (VertexExists(source))
+                neighbor = _adjacentEdges[source];
+            return neighbor;
+        }
+
+        /// <summary>
+        /// Returns a string representation of the specified vertex.
+        /// </summary>
+        /// <param name="vertex">The vertex whose string representation will be returned.</param>
+        /// <returns>A string representation of the specified vertex.</returns>
+        public string GetVertexAsString(VertexType vertex)
+        {
+            string value = string.Empty;
+            List<Edge<VertexType>> neighbors = GetNeighbors(vertex);
+            if (neighbors != null && VertexExists(vertex))
+            {
+                string neighborsAsString = string.Empty;
+                for (int i = 0; i < neighbors.Count; i++)
+                {
+                    Edge<VertexType> neighbor = neighbors[i];
+                    if (i > 0)
+                        neighborsAsString += ", ";
+                    neighborsAsString += string.Format("{0}:{1}", neighbor.Destination.ToString(), neighbor.Weight);
+                }
+                if (string.IsNullOrEmpty(neighborsAsString))
+                    value = string.Format("[{0}]", vertex.ToString());
+                else
+                    value = string.Format("[{0}] - {{{1}}}", vertex.ToString(), neighborsAsString);
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// Returns a list containing all of the vertices in this Graph.
+        /// </summary>
+        /// <returns>A list containing all of the vertices in this Graph.</returns>
+        public VertexList<VertexType> GetVertices()
+        {
+            VertexList<VertexType> vertices = new VertexList<VertexType>();
+            foreach (VertexType vertex in _adjacentEdges.Keys)
+            {
+                vertices.Add(vertex);
+            }
+            return vertices;
         }
 
         /// <summary>
@@ -204,7 +193,7 @@ namespace AlgorithmSuite.DataStructures
         /// <returns>A value of true if the specified vertex exists and false if it doesn't.</returns>
         public bool VertexExists(VertexType vertexId)
         {
-            return (_adjacentEdges.ContainsKey(vertexId));
+            return (vertexId != null && _adjacentEdges.ContainsKey(vertexId));
         }
     }
 }
